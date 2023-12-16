@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 const StatisticLine = (props) => {
   return (
-    <p>{props.text} {props.value}</p>
+    <tr>
+      <td>{props.text} {props.value}</td>
+    </tr>
   )
 }
 
@@ -17,12 +19,16 @@ const Statistics = (props) => {
     return (
       <>
         <h2>statistics</h2>
-        <StatisticLine text="good" value={props.good} />
-        <StatisticLine text="neutral" value={props.neutral} />
-        <StatisticLine text="bad" value={props.bad} />
-        <StatisticLine text="all" value={props.all} />
-        <StatisticLine text="average" value={props.average} />
-        <StatisticLine text="positive" value={props.positive} />
+        <table>
+          <tbody>
+            <StatisticLine text="good" value={props.good} />
+            <StatisticLine text="neutral" value={props.neutral} />
+            <StatisticLine text="bad" value={props.bad} />
+            <StatisticLine text="all" value={props.all} />
+            <StatisticLine text="average" value={props.average} />
+            <StatisticLine text="positive" value={props.positive} />
+          </tbody>
+        </table>
       </>
     )
   }
@@ -41,7 +47,7 @@ const App = () => {
   const [bad, setBad] = useState(0);
 
   const all = good ? good + neutral + bad : 0;
-  const positive = all ? good / all : 'no good reviews yet';
+  const positive = all ? `${(good / all).toFixed(2)} %` : 'no good reviews yet';
   const average = good * 1 + neutral * 0 + bad * -1;
 
   return (
