@@ -14,7 +14,8 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [votesArray, setVotesArray] = useState(Array(anecdotes.length).fill(0));
-
+  const [popular, setPopular] = useState(anecdotes[selected]);
+  const [popularIndex, setPopularIndex] = useState(0);
 
   const nextAnecdote = () => {
     const random = Math.floor(Math.random() * 7);
@@ -25,14 +26,24 @@ const App = () => {
     const votesArrayCopy = [...votesArray];
     votesArrayCopy[selected] += 1;
     setVotesArray(votesArrayCopy);
+
+    const highestValue = Math.max(...votesArrayCopy);
+    const highestValueIndex = votesArrayCopy.indexOf(highestValue);
+    setPopular(anecdotes[highestValueIndex]);
+    setPopularIndex(highestValueIndex);
   }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {votesArray[selected]} votes</p>
       <button onClick={addVote}>vote</button>
       <button onClick={nextAnecdote}>next anecdote</button>
+
+      <h2>Anecdote with most votes</h2>
+      <p>{popular}</p>
+      <p>has {votesArray[popularIndex]}</p>
     </div>
   )
 }
