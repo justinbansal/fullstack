@@ -1,6 +1,6 @@
-import axios from 'axios';
-
 import { useState, useEffect } from 'react';
+
+import personService from './services/persons';
 
 import Filter from './components/Filter';
 import Add from './components/Add';
@@ -16,10 +16,10 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   const hook = () => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data);
+    personService
+      .getAll()
+      .then(people => {
+        setPersons(people);
       })
   }
 
@@ -40,10 +40,10 @@ const App = () => {
       number: newNumber,
     }
 
-    axios
-      .post('http://localhost:3001/persons', newPerson)
-      .then(response => {
-        setPersons(persons.concat(response.data));
+    personService
+      .create(newPerson)
+      .then(person => {
+        setPersons(persons.concat(person));
       })
       .catch(error => console.log(error))
   }
