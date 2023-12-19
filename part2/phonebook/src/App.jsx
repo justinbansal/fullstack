@@ -60,6 +60,16 @@ const App = () => {
     setFilter(event.target.value.toLowerCase());
   }
 
+  const handleDelete = (id, name) => {
+   if (window.confirm(`Delete ${name}?`)) {
+    personService
+      .deletePerson(id)
+      .then(removedPerson => {
+        setPersons(persons.filter(person => person.id !== id));
+      })
+   }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -73,7 +83,7 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete}/>
     </div>
   )
 }
