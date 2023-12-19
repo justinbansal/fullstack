@@ -39,8 +39,13 @@ const App = () => {
       name: newName,
       number: newNumber,
     }
-    const personsCopy = persons.concat(newPerson);
-    setPersons(personsCopy);
+
+    axios
+      .post('http://localhost:3001/persons', newPerson)
+      .then(response => {
+        setPersons(persons.concat(response.data));
+      })
+      .catch(error => console.log(error))
   }
 
   const handleChange = (event) => {
