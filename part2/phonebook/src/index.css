@@ -1,6 +1,14 @@
-.error {
-  color: green;
+.notification {
   font-size: 20px;
   border: 1px solid;
   padding: 10px;
+}
+
+.sucess {
+  color: green;
+}
+
+.error {
+  color: red;
+  border: 1px dotted;
 }

@@ -17,6 +17,7 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const hook = () => {
     personService
@@ -42,12 +43,17 @@ const App = () => {
           .update(matchedPerson.id, updatedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== matchedPerson.id ? person : returnedPerson));
-            setErrorMessage(`Updated number for ${newName}`);
+            setSuccessMessage(`Updated number for ${newName}`);
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 5000)
+          })
+          .catch(error => {
+            setErrorMessage(`Failed to update number for ${newName}. Person may not exist anymore.`);
             setTimeout(() => {
               setErrorMessage(null);
             }, 5000)
           })
-          .catch(error => console.error(error))
       }
       return false;
     }
@@ -61,12 +67,17 @@ const App = () => {
       .create(newPerson)
       .then(person => {
         setPersons(persons.concat(person));
-        setErrorMessage(`Added ${newName}`);
+        setSuccessMessage(`Added ${newName}`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000)
+      })
+      .catch(error => {
+        setErrorMessage(`Failed to add ${newName}.`);
         setTimeout(() => {
           setErrorMessage(null);
         }, 5000)
       })
-      .catch(error => console.log(error))
   }
 
   const handleChange = (event) => {
@@ -87,6 +98,16 @@ const App = () => {
       .deletePerson(id)
       .then(removedPerson => {
         setPersons(persons.filter(person => person.id !== id));
+        setSuccessMessage(`Deleted ${name}`);
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000)
+      })
+      .catch(error => {
+        setErrorMessage(`Failed to delete ${name}. Person may not exist anymore.`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000)
       })
    }
   }
@@ -94,7 +115,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification errorMessage={errorMessage} successMessage={successMessage} />
       <Filter handleFilterChange={handleFilterChange} />
 
       <h2>add a new</h2>
