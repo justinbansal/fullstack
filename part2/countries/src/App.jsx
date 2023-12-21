@@ -8,6 +8,7 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [results, setResults] = useState(null);
   const [country, setCountry] = useState(null);
+  const [view, setView] = useState('search');
 
   const hook = () => {
     countriesService
@@ -19,9 +20,27 @@ const App = () => {
 
   useEffect(hook, []);
 
+  const renderCountry = (country) => {
+    setView('country');
+    let markup = (
+      <>
+        <h1>{country.name.common}</h1>
+        <p>capital {country.capital[0]}</p>
+        <p>area {country.area}</p>
+
+        <p>languages:</p>
+        <ul>
+          {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
+        </ul>
+        <img src={country.flags.svg} alt={country.flags.alt} />
+      </>
+    )
+    setCountry(markup);
+  }
+
   const handleSearch = (event) => {
     setQuery(event.target.value);
-    let filteredCountries = countries.filter(country => country.name.common.includes(event.target.value));
+    let filteredCountries = countries.filter(country => country.name.common.toLowerCase().includes(event.target.value));
     console.log(filteredCountries);
 
     if (filteredCountries.length > 10) {
@@ -31,48 +50,50 @@ const App = () => {
     }
 
     if (filteredCountries.length > 1 && filteredCountries.length <= 10) {
+      setView('list');
       setMessage('');
-      // show all countries matching query
       const results = filteredCountries.map(country => (
-        <li key={country.name.common}>{country.name.common}</li>
+        <li key={country.name.common}>{country.name.common} <button onClick={() => renderCountry(country)}>show</button></li>
       ))
       setResults(results);
-      setCountry(null);
     }
 
     if (filteredCountries.length === 1) {
       setMessage('');
-      setResults(null);
-      const country = filteredCountries[0];
-      let markup = (
-        <>
-          <h1>{country.name.common}</h1>
-          <p>capital {country.capital[0]}</p>
-          <p>area {country.area}</p>
-
-          <p>languages:</p>
-          <ul>
-            {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
-          </ul>
-          <img src={country.flags.svg} alt={country.flags.alt} />
-        </>
-      )
-      setCountry(markup);
+      renderCountry(filteredCountries[0]);
     }
   }
 
-  return (
-    <div>
+  if (view === 'search') {
+    return (
+      <div>
+        find countries <input type="text" onChange={handleSearch}/>
+        <p>{message}</p>
+      </div>
+    )
+  }
+
+  if (view === 'list') {
+    return (
       <div>
         find countries <input type="text" onChange={handleSearch}/>
         <p>{message}</p>
         <ul>
           {results}
         </ul>
+      </div>
+    )
+  }
+
+  if (view === 'country') {
+    return (
+      <div>
+        find countries <input type="text" onChange={handleSearch}/>
+        <p>{message}</p>
         {country}
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 export default App;
