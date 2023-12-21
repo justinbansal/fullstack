@@ -21,21 +21,31 @@ const App = () => {
   useEffect(hook, []);
 
   const renderCountry = (country) => {
-    setView('country');
-    let markup = (
-      <>
-        <h1>{country.name.common}</h1>
-        <p>capital {country.capital[0]}</p>
-        <p>area {country.area}</p>
+    countriesService
+      .getWeatherForCity(country)
+      .then(response => {
+        setView('country');
+        let markup = (
+          <>
+            <h1>{country.name.common}</h1>
+            <p>capital {country.capital[0]}</p>
+            <p>area {country.area}</p>
 
-        <p>languages:</p>
-        <ul>
-          {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
-        </ul>
-        <img src={country.flags.svg} alt={country.flags.alt} />
-      </>
-    )
-    setCountry(markup);
+            <p>languages:</p>
+            <ul>
+              {Object.values(country.languages).map(language => <li key={language}>{language}</li>)}
+            </ul>
+            <img src={country.flags.svg} alt={country.flags.alt} />
+            <h2>Weather in {country.capital[0]}</h2>
+            <p>temperature {(response.main.temp - 273.15).toFixed(2)} celsius</p>
+            <img src={`https://openweathermap.org/img/wn/${response.weather[0].icon}@2x.png`} alt={response.weather[0].description} />
+            <p>wind {response.wind.speed} m/s</p>
+          </>
+        )
+        setCountry(markup);
+      })
+      .catch(error => console.error(error));
+
   }
 
   const handleSearch = (event) => {
